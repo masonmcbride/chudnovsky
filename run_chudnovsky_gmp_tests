@@ -1,0 +1,3 @@
+# links with gmp and math libraries gcc -O2 gmp_chudnovsky.c -o gmp_chud -lgmp -lm
+./gmp_chud 1000
+./gmp_chud 100000000
