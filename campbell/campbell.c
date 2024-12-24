@@ -53,7 +53,7 @@ int main() {
   {
     long n;
     p1 = gen_0;
-    for (n = 0; n <= 0; ++n)
+    for (n = 0; n <= 1; ++n)
     {
       long l2;
       GEN p3;
