@@ -17,12 +17,6 @@ def get_cached_sqrt2(required_prec: int, recompute=False) -> Decimal:
     """
     getcontext().prec = required_prec
 
-    def write_cache(s2: Decimal, digits: int, elapsed: float):
-        with open(CACHE_FILE, "w") as f:
-            f.write(f"precision:{digits}\n")
-            f.write(f"sqrt2:{str(s2)}\n")
-            f.write(f"computed_in_seconds:{elapsed:.10f}\n")
-
     if not recompute and os.path.exists(CACHE_FILE):
         with open(CACHE_FILE, "r") as f:
             lines = f.readlines()
@@ -41,7 +35,10 @@ def get_cached_sqrt2(required_prec: int, recompute=False) -> Decimal:
     start = time.time()
     sqrt2 = Decimal(2).sqrt()
     elapsed = time.time() - start
-    write_cache(sqrt2, required_prec, elapsed)
+    with open(CACHE_FILE, "w") as f:
+        f.write(f"precision:{required_prec}\n")
+        f.write(f"sqrt2:{str(sqrt2)}\n")
+        f.write(f"computed_in_seconds:{elapsed:.10f}\n")
     print(f"√2 computed in {elapsed:.6f} seconds.")
     return sqrt2
 
@@ -80,7 +77,7 @@ def compute_pi(iterations: int, target_pi_digits: int, sqrt2_digits: int = None,
     - Returns final π value (Decimal)
     """
     sqrt2_prec = sqrt2_digits or target_pi_digits
-    working_prec = target_pi_digits + 100  # safety margin
+    working_prec = target_pi_digits
     getcontext().prec = working_prec
     print(f"Working precision set to {working_prec} digits")
 
@@ -109,8 +106,8 @@ def compare_pi_raw_str(π: Decimal, reference_file: str):
     print(f"✅ Matched {match} characters (including decimal point).")
 
 if __name__ == "__main__":
-    π_final = compute_pi(iterations=20, 
-                         target_pi_digits=100000, 
+    π_final = compute_pi(iterations=19, 
+                         target_pi_digits=1000000, 
                          verbose=False)
     print(f"\nFinal π ≈ {π_final}")
     compare_pi_raw_str(π_final, "pi_1mil.txt")
