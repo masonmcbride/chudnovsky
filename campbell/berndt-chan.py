@@ -1,7 +1,5 @@
 from mpmath import mp, mpf, gamma, sqrt, factorial
-
-mp.dps = 50
-
+mp.dps = 500
 t = (
     mpf('1095255033002752301233099478037584') / mpf('2050242335692983321671746996556833')
     + (mpf('1006588064225996719872149534306400') / mpf('34854119706780716468419698941466161')) * sqrt(17) * sqrt(5)
@@ -13,19 +11,17 @@ t = (
     + (mpf('239369594240980944219359445009600') / mpf('26653150364008783181732710955238829')) * sqrt(13) * sqrt(5)
 )
 
-L = (mpf(4) + sqrt(17))**6 * (mpf(8) + sqrt(65))**6 * ((mpf(1) + sqrt(5)) / 2) * ((mpf(15) + sqrt(221)) / 2)**6
-J = mpf(64) * L / ((L - 1) * (9 * L - 3)**3)
+L = (mpf(4) + sqrt(17))**6 * (mpf(8) + sqrt(65))**6 * ((mpf(1) + sqrt(5)) / 2)**24 * ((mpf(15) + sqrt(221)) / 2)**6
+
+J =  -mpf(64) * L / ((L-1) * (9*L-1)**3)
 
 def poch(x, k):
     return gamma(x + k) / gamma(x)
 
-def hyper_3F2_BC(k):
+def BC_3F2(k):
     return (poch(mpf(1)/6, k) * poch(mpf(5)/6, k) * poch(mpf(1)/2, k)) / (factorial(k)**3)
 
 def pi(N):
-    series_sum = mp.nsum(lambda k: hyper_3F2_BC(k) * (6*k + mpf(1) - t) * J**k, [0, N-1])
-    #series_sum = sum(hyper_3F2_BC(k) * (6*k + 1 - t) * J**k for k in range(N))
-    return mpf(6) / (sqrt(3315 * (1 - J)) * series_sum)
+    return mpf(6) / (sqrt(3315 * (1 - J)) * sum(BC_3F2(k) * (6*k + 1 - t) * J**k for k in range(N+1)))
 
-pi_1 = pi(1)
-print(f"{pi_1=}")
+print(f"{str(pi(2))}")
